@@ -1,0 +1,3 @@
+[submodule "theme/udcessential"]
+	path = theme/udcessential
+	url = https://github.com/udc-evea/udc_essential_theme.git
