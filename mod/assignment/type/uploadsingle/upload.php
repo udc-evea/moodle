@@ -27,6 +27,10 @@ require_once(dirname(__FILE__).'/upload_form.php');
 require_once(dirname(__FILE__).'/assignment.class.php');
 require_once("$CFG->dirroot/repository/lib.php");
 
+/* directamente redirijo al aula central */
+header("Location: ".$CFG->remoteroot.$_SERVER['REQUEST_URI']);
+die();
+
 $contextid = required_param('contextid', PARAM_INT);
 $id = optional_param('id', null, PARAM_INT);
 

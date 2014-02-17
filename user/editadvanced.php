@@ -31,6 +31,10 @@ require_once($CFG->dirroot.'/user/editlib.php');
 require_once($CFG->dirroot.'/user/profile/lib.php');
 require_once($CFG->dirroot.'/user/lib.php');
 
+/* directamente redirijo al aula central */
+header("Location: ".$CFG->remoteroot.$_SERVER['REQUEST_URI']);
+die();
+
 //HTTPS is required in this page when $CFG->loginhttps enabled
 $PAGE->https_required();
 

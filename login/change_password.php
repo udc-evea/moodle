@@ -28,6 +28,10 @@ require('../config.php');
 require_once('change_password_form.php');
 require_once($CFG->libdir.'/authlib.php');
 
+/* directamente redirijo al aula central */
+header("Location: ".$CFG->remoteroot.$_SERVER['REQUEST_URI']);
+die();
+
 $id     = optional_param('id', SITEID, PARAM_INT); // current course
 $return = optional_param('return', 0, PARAM_BOOL); // redirect after password change
 

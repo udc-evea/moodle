@@ -27,6 +27,10 @@ require('../config.php');
 require_once("$CFG->dirroot/user/files_form.php");
 require_once("$CFG->dirroot/repository/lib.php");
 
+/* directamente redirijo al aula central */
+header("Location: ".$CFG->remoteroot.$_SERVER['REQUEST_URI']);
+die();
+
 require_login();
 if (isguestuser()) {
     die();
