@@ -1,13 +1,16 @@
-@core @core_badges @_only_local @_file_upload
+@core @core_badges @_only_local
 Feature: Award badges
   In order to award badges to users for their achievements
   As an admin
   I need to add criteria to badges in the system
 
+  Background:
+    Given I am on homepage
+    And I log in as "admin"
+
   @javascript
   Scenario: Award profile badge
-    Given I log in as "admin"
-    And I expand "Site administration" node
+    Given I expand "Site administration" node
     And I expand "Badges" node
     And I follow "Add a new badge"
     And I fill the moodle form with:
@@ -15,7 +18,7 @@ Feature: Award badges
       | Description | Test badge description |
       | issuername | Test Badge Site |
       | issuercontact | testuser@test-badge-site.com |
-    And I upload "badges/tests/behat/badge.png" file to "Image" filemanager
+    And I upload "badges/tests/behat/badge.png" file to "Image" filepicker
     And I press "Create badge"
     And I select "Profile completion" from "type"
     And I check "First name"
@@ -43,7 +46,6 @@ Feature: Award badges
       | username | firstname | lastname | email |
       | teacher | teacher | 1 | teacher1@asd.com |
       | student | student | 1 | student1@asd.com |
-    And I log in as "admin"
     And I expand "Site administration" node
     And I expand "Badges" node
     And I follow "Add a new badge"
@@ -51,7 +53,7 @@ Feature: Award badges
       | Name | Site Badge |
       | Description | Site badge description |
       | issuername | Tester of site badge |
-    And I upload "badges/tests/behat/badge.png" file to "Image" filemanager
+    And I upload "badges/tests/behat/badge.png" file to "Image" filepicker
     And I press "Create badge"
     And I select "Manual issue by role" from "type"
     And I check "Teacher"
@@ -87,6 +89,7 @@ Feature: Award badges
       | teacher1 | C1 | editingteacher |
       | student1 | C1 | student |
       | student2 | C1 | student |
+    And I log out
     And I log in as "teacher1"
     And I follow "Course 1"
     And I click on "//span[text()='Badges']" "xpath_element" in the "Administration" "block"
@@ -95,7 +98,7 @@ Feature: Award badges
       | Name | Course Badge |
       | Description | Course badge description |
       | issuername | Tester of course badge |
-    And I upload "badges/tests/behat/badge.png" file to "Image" filemanager
+    And I upload "badges/tests/behat/badge.png" file to "Image" filepicker
     And I press "Create badge"
     And I select "Manual issue by role" from "type"
     And I check "Teacher"
@@ -130,6 +133,7 @@ Feature: Award badges
       | user | course | role |
       | teacher1 | C1 | editingteacher |
       | student1 | C1 | student |
+    And I log out
     And I log in as "admin"
     And I set the following administration settings values:
       | Enable completion tracking | 1 |
@@ -152,7 +156,7 @@ Feature: Award badges
       | Name | Course Badge |
       | Description | Course badge description |
       | issuername | Tester of course badge |
-    And I upload "badges/tests/behat/badge.png" file to "Image" filemanager
+    And I upload "badges/tests/behat/badge.png" file to "Image" filepicker
     And I press "Create badge"
     And I select "Activity completion" from "type"
     And I check "Test assignment name"
@@ -168,6 +172,7 @@ Feature: Award badges
     And I follow "Home"
     And I follow "Course 1"
     And I press "Mark as complete: Test assignment name"
+    And I wait "2" seconds
     And I expand "My profile" node
     And I follow "My badges"
     Then I should see "Course Badge"
@@ -185,6 +190,7 @@ Feature: Award badges
       | user | course | role |
       | teacher1 | C1 | editingteacher |
       | student1 | C1 | student |
+    And I log out
     And I log in as "admin"
     And I set the following administration settings values:
       | Enable completion tracking | 1 |
@@ -213,7 +219,7 @@ Feature: Award badges
       | Name | Course Badge |
       | Description | Course badge description |
       | issuername | Tester of course badge |
-    And I upload "badges/tests/behat/badge.png" file to "Image" filemanager
+    And I upload "badges/tests/behat/badge.png" file to "Image" filepicker
     And I press "Create badge"
     And I select "Course completion" from "type"
     And I fill the moodle form with:

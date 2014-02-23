@@ -528,6 +528,9 @@ class core_renderer extends renderer_base {
               <li><a href="http://www.contentquality.com/mynewtester/cynthia.exe?rptmode=0&amp;warnp2n3e=1&amp;url1=' . urlencode(qualified_me()) . '">WCAG 1 (2,3) Check</a></li>
             </ul></div>';
         }
+        if (!empty($CFG->additionalhtmlfooter)) {
+            $output .= "\n".$CFG->additionalhtmlfooter;
+        }
         return $output;
     }
 
@@ -549,22 +552,15 @@ class core_renderer extends renderer_base {
 
     /**
      * The standard tags (typically script tags that are not needed earlier) that
-     * should be output after everything else. Designed to be called in theme layout.php files.
+     * should be output after everything else, . Designed to be called in theme layout.php files.
      *
      * @return string HTML fragment.
      */
     public function standard_end_of_body_html() {
-        global $CFG;
-
         // This function is normally called from a layout.php file in {@link core_renderer::header()}
         // but some of the content won't be known until later, so we return a placeholder
         // for now. This will be replaced with the real content in {@link core_renderer::footer()}.
-        $output = '';
-        if (!empty($CFG->additionalhtmlfooter)) {
-            $output .= "\n".$CFG->additionalhtmlfooter;
-        }
-        $output .= $this->unique_end_html_token;
-        return $output;
+        return $this->unique_end_html_token;
     }
 
     /**
@@ -1092,20 +1088,24 @@ class core_renderer extends renderer_base {
         foreach ($menu->get_primary_actions($this) as $action) {
             if ($action instanceof renderable) {
                 $content = $this->render($action);
+                $role = 'presentation';
             } else {
                 $content = $action;
+                $role = 'menuitem';
             }
-            $output .= html_writer::tag('li', $content, array('role' => 'presentation'));
+            $output .= html_writer::tag('li', $content, array('role' => $role));
         }
         $output .= html_writer::end_tag('ul');
         $output .= html_writer::start_tag('ul', $menu->attributessecondary);
         foreach ($menu->get_secondary_actions() as $action) {
             if ($action instanceof renderable) {
                 $content = $this->render($action);
+                $role = 'presentation';
             } else {
                 $content = $action;
+                $role = 'menuitem';
             }
-            $output .= html_writer::tag('li', $content, array('role' => 'presentation'));
+            $output .= html_writer::tag('li', $content, array('role' => $role));
         }
         $output .= html_writer::end_tag('ul');
         $output .= html_writer::end_tag('div');
@@ -1424,12 +1424,7 @@ class core_renderer extends renderer_base {
      */
     public function block_move_target($target, $zones, $previous) {
         if ($previous == null) {
-            if (empty($zones)) {
-                // There are no zones, probably because there are no blocks.
-                $position = get_string('moveblockhere', 'block');
-            } else {
-                $position = get_string('moveblockbefore', 'block', $zones[0]);
-            }
+            $position = get_string('moveblockbefore', 'block', $zones[0]);
         } else {
             $position = get_string('moveblockafter', 'block', $previous);
         }

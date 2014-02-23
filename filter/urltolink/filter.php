@@ -132,13 +132,8 @@ class filter_urltolink extends moodle_text_filter {
         $querystring = '(?:\?(?:[\pL0-9\.!$&\'\(\)*+,;=_~:@/?-]|%[a-fA-F0-9]{2})*)';
         $fragment = '(?:\#(?:[\pL0-9\.!$&\'\(\)*+,;=_~:@/?-]|%[a-fA-F0-9]{2})*)';
 
-        // Lookbehind assertions.
-        // Is not HTML attribute or CSS URL property. Unfortunately legit text like "url(http://...)" will not be a link.
-        $lookbehindstart = "(?<!=[\"']|\burl\([\"' ]|\burl\()";
-        $lookbehindend = "(?<![]),.;])";
-
-        $regex = "$lookbehindstart$urlstart((?:$domainsegment\.)+$domainsegment|$numericip)" .
-                "($port?$path$querystring?$fragment?)$lookbehindend";
+        $regex = "(?<!=[\"'])$urlstart((?:$domainsegment\.)+$domainsegment|$numericip)" .
+                "($port?$path$querystring?$fragment?)(?<![]),.;])";
         if ($unicoderegexp) {
             $regex = '#' . $regex . '#ui';
         } else {

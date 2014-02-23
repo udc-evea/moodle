@@ -67,8 +67,9 @@ class assignfeedback_offline_import_grades_form extends moodleform implements re
 
         $scaleoptions = null;
         if ($assignment->get_instance()->grade < 0) {
-            if ($scale = $DB->get_record('scale', array('id'=>-($assignment->get_instance()->grade)))) {
-                $scaleoptions = make_menu_from_list($scale->scale);
+            $scale = $DB->get_record('scale', array('id'=>-($assignment->get_instance()->grade)));
+            if ($scale) {
+                $scaleoptions = explode(',', $scale->scale);
             }
         }
         if (!$gradeimporter->init()) {
@@ -103,7 +104,7 @@ class assignfeedback_offline_import_grades_form extends moodleform implements re
                 // This is a scale - we need to convert any grades to indexes in the scale.
                 $scaleindex = array_search($grade, $scaleoptions);
                 if ($scaleindex !== false) {
-                    $grade = $scaleindex;
+                    $grade = $scaleindex + 1;
                 } else {
                     $grade = '';
                 }
@@ -131,13 +132,8 @@ class assignfeedback_offline_import_grades_form extends moodleform implements re
 
             if (!$skip) {
                 $update = true;
-                if (!empty($scaleoptions)) {
-                    $formattedgrade = $scaleoptions[$grade];
-                } else {
-                    $formattedgrade = format_float($grade, 2);
-                }
                 $updates[] = get_string('gradeupdate', 'assignfeedback_offline',
-                                            array('grade'=>$formattedgrade, 'student'=>$userdesc));
+                                            array('grade'=>format_float($grade, 2), 'student'=>$userdesc));
             }
 
             if ($ignoremodified || !$stalemodificationdate) {

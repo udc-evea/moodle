@@ -363,7 +363,7 @@ ORDER BY
      *
      * @param qubaid_condition $qubaids used to restrict which usages are included
      *                                  in the query. See {@link qubaid_condition}.
-     * @param array            $slots   A list of slots for the questions you want to know about.
+     * @param array            $slots   A list of slots for the questions you want to konw about.
      * @param string|null      $fields
      * @return array of records. See the SQL in this function to see the fields available.
      */
@@ -400,8 +400,8 @@ SELECT
     {$fields}
 
 FROM {$qubaids->from_question_attempts('qa')}
-JOIN {question_attempt_steps} qas ON qas.questionattemptid = qa.id
-        AND qas.sequencenumber = {$this->latest_step_for_qa_subquery()}
+JOIN {question_attempt_steps} qas ON
+        qas.id = {$this->latest_step_for_qa_subquery()}
 
 WHERE
     {$qubaids->where()} AND
@@ -438,8 +438,8 @@ SELECT
     COUNT(1) AS numattempts
 
 FROM {$qubaids->from_question_attempts('qa')}
-JOIN {question_attempt_steps} qas ON qas.questionattemptid = qa.id
-        AND qas.sequencenumber = {$this->latest_step_for_qa_subquery()}
+JOIN {question_attempt_steps} qas ON
+        qas.id = {$this->latest_step_for_qa_subquery()}
 JOIN {question} q ON q.id = qa.questionid
 
 WHERE
@@ -510,7 +510,7 @@ ORDER BY
      */
     public function load_questions_usages_where_question_in_state(
             qubaid_condition $qubaids, $summarystate, $slot, $questionid = null,
-            $orderby = 'random', $params = array(), $limitfrom = 0, $limitnum = null) {
+            $orderby = 'random', $params, $limitfrom = 0, $limitnum = null) {
 
         $extrawhere = '';
         if ($questionid) {
@@ -531,28 +531,26 @@ ORDER BY
             $sqlorderby = '';
         }
 
-        // We always want the total count, as well as the partcular list of ids
-        // based on the paging and sort order. Because the list of ids is never
-        // going to be too ridiculously long. My worst-case scenario is
-        // 10,000 students in the course, each doing 5 quiz attempts. That
+        // We always want the total count, as well as the partcular list of ids,
+        // based on the paging and sort order. Becuase the list of ids is never
+        // going to be too rediculously long. My worst-case scenario is
+        // 10,000 students in the coures, each doing 5 quiz attempts. That
         // is a 50,000 element int => int array, which PHP seems to use 5MB
-        // memory to store on a 64 bit server.
-        $qubaidswhere = $qubaids->where(); // Must call this before params.
+        // memeory to store on a 64 bit server.
         $params += $qubaids->from_where_params();
         $params['slot'] = $slot;
-
         $qubaids = $this->db->get_records_sql_menu("
 SELECT
     qa.questionusageid,
     1
 
 FROM {$qubaids->from_question_attempts('qa')}
-JOIN {question_attempt_steps} qas ON qas.questionattemptid = qa.id
-        AND qas.sequencenumber = {$this->latest_step_for_qa_subquery()}
+JOIN {question_attempt_steps} qas ON
+        qas.id = {$this->latest_step_for_qa_subquery()}
 JOIN {question} q ON q.id = qa.questionid
 
 WHERE
-    {$qubaidswhere} AND
+    {$qubaids->where()} AND
     qa.slot = :slot
     $extrawhere
 
@@ -589,7 +587,7 @@ $sqlorderby
             $slotwhere = " AND qa.slot $slottest";
         } else {
             $slotwhere = '';
-            $slotsparams = array();
+            $params = array();
         }
 
         list($statetest, $stateparams) = $this->db->get_in_or_equal(array(
@@ -609,8 +607,8 @@ SELECT
     COUNT(1) AS numaveraged
 
 FROM {$qubaids->from_question_attempts('qa')}
-JOIN {question_attempt_steps} qas ON qas.questionattemptid = qa.id
-        AND qas.sequencenumber = {$this->latest_step_for_qa_subquery()}
+JOIN {question_attempt_steps} qas ON
+        qas.id = {$this->latest_step_for_qa_subquery()}
 
 WHERE
     {$qubaids->where()}
@@ -926,11 +924,10 @@ ORDER BY
         // NULL total into a 0.
         return "SELECT COALESCE(SUM(qa.maxmark * qas.fraction), 0)
             FROM {question_attempts} qa
-            JOIN {question_attempt_steps} qas ON qas.questionattemptid = qa.id
-                    AND qas.sequencenumber = (
-                            SELECT MAX(summarks_qas.sequencenumber)
-                              FROM {question_attempt_steps} summarks_qas
-                             WHERE summarks_qas.questionattemptid = qa.id
+            JOIN {question_attempt_steps} qas ON qas.id = (
+                SELECT MAX(summarks_qas.id)
+                  FROM {question_attempt_steps} summarks_qas
+                 WHERE summarks_qas.questionattemptid = qa.id
             )
             WHERE qa.questionusageid = $qubaid
             HAVING COUNT(CASE
@@ -972,15 +969,15 @@ ORDER BY
                        {$alias}qas.userid
 
                   FROM {$qubaids->from_question_attempts($alias . 'qa')}
-                  JOIN {question_attempt_steps} {$alias}qas ON {$alias}qas.questionattemptid = {$alias}qa.id
-                            AND {$alias}qas.sequencenumber = {$this->latest_step_for_qa_subquery($alias . 'qa.id')}
+                  JOIN {question_attempt_steps} {$alias}qas ON
+                           {$alias}qas.id = {$this->latest_step_for_qa_subquery($alias . 'qa.id')}
                  WHERE {$qubaids->where()}
             ) $alias", $qubaids->from_where_params());
     }
 
     protected function latest_step_for_qa_subquery($questionattemptid = 'qa.id') {
         return "(
-                SELECT MAX(sequencenumber)
+                SELECT MAX(id)
                 FROM {question_attempt_steps}
                 WHERE questionattemptid = $questionattemptid
             )";

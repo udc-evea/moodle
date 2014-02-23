@@ -941,7 +941,7 @@ class question_bank_view {
         $columns = array('checkbox', 'qtype', 'questionname', 'editaction',
                 'previewaction', 'moveaction', 'deleteaction', 'creatorname',
                 'modifiername');
-        if (question_get_display_preference('qbshowtext', 0, PARAM_BOOL, new moodle_url(''))) {
+        if (optional_param('qbshowtext', false, PARAM_BOOL)) {
             $columns[] = 'questiontext';
         }
         return $columns;

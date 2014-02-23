@@ -19,6 +19,6 @@ Added:
  * readme_moodle.txt - this file ;-)
 
 Our changes:
- * Removed random seed initialization from lib/adodb/adodb.inc.php:172
+ * none
 
 skodak, iarenaza, moodler, stronk7

@@ -169,6 +169,11 @@
 				die("Illegal path http:// or ftp://");
 		}
 		
+			
+		// Initialize random number generator for randomizing cache flushes
+		// -- note Since PHP 4.2.0, the seed  becomes optional and defaults to a random value if omitted.
+		 srand(((double)microtime())*1000000);
+		
 		/**
 		 * ADODB version as a string.
 		 */

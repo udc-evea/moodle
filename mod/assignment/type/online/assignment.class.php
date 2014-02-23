@@ -37,9 +37,6 @@ class assignment_online extends assignment_base {
         $editmode = ($editable and $edit);
 
         if ($editmode) {
-            // Loading the constants FILE_INTERNAL and FILE_EXTERNAL.
-            require_once($CFG->dirroot . '/repository/lib.php');
-
             // prepare form and process submitted data
             $editoroptions = array(
                 'noclean'  => false,

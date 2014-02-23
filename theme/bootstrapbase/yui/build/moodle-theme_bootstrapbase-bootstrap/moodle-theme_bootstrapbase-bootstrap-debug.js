@@ -271,6 +271,7 @@ Y.BootstrapEngine = BootstrapEngine;
 
 
 }, '@VERSION@' ,{requires:['node','base-base']});
+;
 
 YUI.add('gallery-bootstrap-collapse', function(Y) {
 
@@ -300,7 +301,7 @@ However, it can be manually plugged into any node or node list.
 @class Bootstrap.Collapse
 **/
 
-function CollapsePlugin() {
+function CollapsePlugin(config) {
     CollapsePlugin.superclass.constructor.apply(this, arguments);
 }
 
@@ -350,7 +351,9 @@ Y.extend(CollapsePlugin, Y.Plugin.Base, {
     * <code>data-target</code> or <code>href</code> attribute.
     */
     hide: function() {
-        var node      = this._getTarget();
+        var showClass = this.config.showClass,
+            hideClass = this.config.hideClass,
+            node      = this._getTarget();
 
         if ( this.transitioning ) {
             return;
@@ -367,7 +370,9 @@ Y.extend(CollapsePlugin, Y.Plugin.Base, {
     * <code>data-target</code> or <code>href</code> attribute.
     */
     show: function() {
-        var node      = this._getTarget(),
+        var showClass = this.config.showClass,
+            hideClass = this.config.hideClass,
+            node      = this._getTarget(),
             host      = this._node,
             self      = this,
             parent,
@@ -491,7 +496,7 @@ Y.namespace('Bootstrap').Collapse = CollapsePlugin;
 
 
 }, '@VERSION@' ,{requires:['plugin','transition','event','event-delegate']});
-
+;
 YUI.add('gallery-bootstrap-dropdown', function(Y) {
 
 /**
@@ -521,7 +526,7 @@ It can also be plugged into any node or node list.
 
 var NS = Y.namespace('Bootstrap');
 
-function DropdownPlugin() {
+function DropdownPlugin(config) {
   DropdownPlugin.superclass.constructor.apply(this, arguments);
 }
 
@@ -550,7 +555,7 @@ Y.extend( DropdownPlugin, Y.Plugin.Base, {
             className = this.config.className;
 
         target.toggleClass( className );
-        target.once('clickoutside', function() {
+        target.once('clickoutside', function(e) {
             target.toggleClass( className );
         });
     },
@@ -606,6 +611,7 @@ NS.dropdown_delegation = function() {
 
 
 }, '@VERSION@' ,{requires:['plugin','event','event-outside']});
+;
 YUI.add('moodle-theme_bootstrapbase-bootstrap', function (Y, NAME) {
 
 /**

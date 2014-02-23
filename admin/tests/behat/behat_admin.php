@@ -17,7 +17,7 @@
 /**
  * Steps definitions related with administration.
  *
- * @package   core_admin
+ * @package   core
  * @category  test
  * @copyright 2013 David Monllaó
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -35,7 +35,7 @@ use Behat\Behat\Context\Step\Given as Given,
 /**
  * Site administration level steps definitions.
  *
- * @package    core_admin
+ * @package    core
  * @category   test
  * @copyright  2013 David Monllaó
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -59,7 +59,7 @@ class behat_admin extends behat_base {
             // We expect admin block to be visible, otherwise go to homepage.
             if (!$this->getSession()->getPage()->find('css', '.block_settings')) {
                 $this->getSession()->visit($this->locate_path('/'));
-                $this->wait(self::TIMEOUT * 1000, self::PAGE_READY_JS);
+                $this->wait(self::TIMEOUT, '(document.readyState === "complete")');
             }
 
             // Search by label.
@@ -68,7 +68,7 @@ class behat_admin extends behat_base {
             $submitsearch = $this->find('css', 'form.adminsearchform input[type=submit]');
             $submitsearch->press();
 
-            $this->wait(self::TIMEOUT * 1000, self::PAGE_READY_JS);
+            $this->wait(self::TIMEOUT, '(document.readyState === "complete")');
 
             // Admin settings does not use the same DOM structure than other moodle forms
             // but we also need to use lib/behat/form_field/* to deal with the different moodle form elements.
@@ -127,15 +127,21 @@ class behat_admin extends behat_base {
     }
 
     /**
-     * Will be deprecated in 2.7. Goes to notification page.
+     * Goes to notification page ensuring site admin navigation is loaded.
      *
      * @Given /^I go to notifications page$/
      * @return Given[]
      */
     public function i_go_to_notifications_page() {
-        return array(
-            new Given('I expand "' . get_string('administrationsite') . '" node'),
-            new Given('I follow "' . get_string('notifications') . '"')
-        );
+        if ($this->running_javascript()) {
+            return array(
+                new Given('I expand "' . get_string('administrationsite') . '" node'),
+                new Given('I follow "' . get_string('notifications') . '"')
+            );
+        } else {
+            return array(
+                new Given('I follow "' . get_string('administrationsite') . '"')
+            );
+        }
     }
 }

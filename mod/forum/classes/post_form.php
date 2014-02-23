@@ -166,7 +166,7 @@ class mod_forum_post_form extends moodleform {
             $groupdata = groups_get_activity_allowed_groups($cm);
             $groupcount = count($groupdata);
             $modulecontext = context_module::instance($cm->id);
-            $contextcheck = has_capability('mod/forum:movediscussions', $modulecontext) && empty($post->parent) && $groupcount;
+            $contextcheck = has_capability('mod/forum:movediscussions', $modulecontext) && empty($post->parent) && $groupcount > 1;
             if ($contextcheck) {
                 $groupinfo = array('0' => get_string('allparticipants'));
                 foreach ($groupdata as $grouptemp) {

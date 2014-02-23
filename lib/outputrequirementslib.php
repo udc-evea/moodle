@@ -240,7 +240,6 @@ class page_requirements_manager {
             $this->YUI_config->debug = true;
         } else {
             $this->yui3loader->filter = null;
-            $this->YUI_config->groups['moodle']['filter'] = null;
             $this->YUI_config->debug = false;
         }
 
@@ -287,9 +286,6 @@ class page_requirements_manager {
         );
         if ($CFG->debugdeveloper) {
             $this->M_cfg['developerdebug'] = true;
-        }
-        if (defined('BEHAT_SITE_RUNNING')) {
-            $this->M_cfg['behatsiterunning'] = true;
         }
 
         // Accessibility stuff.
@@ -1047,18 +1043,14 @@ class page_requirements_manager {
     public function js_init_code($jscode, $ondomready = false, array $module = null) {
         $jscode = trim($jscode, " ;\n"). ';';
 
-        $uniqid = html_writer::random_id();
-        $startjs = " M.util.js_pending('" . $uniqid . "');";
-        $endjs = " M.util.js_complete('" . $uniqid . "');";
-
         if ($module) {
             $this->js_module($module);
             $modulename = $module['name'];
-            $jscode = "$startjs Y.use('$modulename', function(Y) { $jscode $endjs });";
+            $jscode = "Y.use('$modulename', function(Y) { $jscode });";
         }
 
         if ($ondomready) {
-            $jscode = "$startjs Y.on('domready', function() { $jscode $endjs });";
+            $jscode = "Y.on('domready', function() { $jscode });";
         }
 
         $this->jsinitcode[] = $jscode;
@@ -1224,7 +1216,7 @@ class page_requirements_manager {
                 $output .= js_writer::function_call($data[0], $data[1], $data[2]);
             }
             if (!empty($ondomready)) {
-                $output = "    Y.on('domready', function() {\n$output\n});";
+                $output = "    Y.on('domready', function() {\n$output\n    });";
             }
         }
         return $output;
@@ -1257,25 +1249,14 @@ class page_requirements_manager {
         $code = '';
 
         $jsrev = $this->get_jsrev();
-
-        $yuiformat = '-min';
-        if ($this->yui3loader->filter === 'RAW') {
-            $yuiformat = '';
-        }
-
-        $format = '-min';
-        if ($this->YUI_config->groups['moodle']['filter'] === 'DEBUG') {
-            $format = '-debug';
-        }
-
         $baserollups = array(
-            'rollup/' . $CFG->yui3version . '/yui-moodlesimple' . $yuiformat . '.js',
+            'rollup/' . $CFG->yui3version . '/yui-moodlesimple-min.js',
         );
         // The reason for separate rollups is that the Y = YUI().use('*') call is run async and
         // it gets it's knickers in a twist. Putting it in a separate <script>
         // to the moodle rollup means that it's completed before the moodle one starts.
         $moodlerollups = array(
-            'rollup/' . $jsrev . '/mcore' . $format . '.js',
+            'rollup/' . $jsrev . '/mcore-min.js',
         );
 
         if ($this->yui3loader->combine) {
@@ -1309,8 +1290,10 @@ class page_requirements_manager {
 
         if ($this->yui3loader->filter === 'RAW') {
             $code = str_replace('-min.css', '.css', $code);
+            $code = str_replace('-min.js', '.js', $code);
         } else if ($this->yui3loader->filter === 'DEBUG') {
             $code = str_replace('-min.css', '.css', $code);
+            $code = str_replace('-min.js', '-debug.js', $code);
         }
         return $code;
     }
@@ -1470,8 +1453,6 @@ class page_requirements_manager {
 
         // Add other requested modules.
         $output = $this->get_extra_modules_code();
-
-        $this->js_init_code('M.util.js_complete("init");', true);
 
         // All the other linked scripts - there should be as few as possible.
         if ($this->jsincludes['footer']) {

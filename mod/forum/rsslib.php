@@ -228,17 +228,13 @@ function forum_rss_feed_posts_sql($forum, $cm, $newsince=0) {
     $sql = "SELECT p.id AS postid,
                  d.id AS discussionid,
                  d.name AS discussionname,
-                 d.groupid,
-                 d.timestart,
-                 d.timeend,
                  u.id AS userid,
                  $usernamefields,
                  p.subject AS postsubject,
                  p.message AS postmessage,
                  p.created AS postcreated,
                  p.messageformat AS postformat,
-                 p.messagetrust AS posttrust,
-                 p.parent as postparent
+                 p.messagetrust AS posttrust
             FROM {forum_discussions} d,
                {forum_posts} p,
                {user} u
@@ -319,26 +315,12 @@ function forum_rss_feed_contents($forum, $sql, $params, $context) {
     foreach ($recs as $rec) {
             $item = new stdClass();
 
-            $discussion = new stdClass();
-            $discussion->id = $rec->discussionid;
-            $discussion->groupid = $rec->groupid;
-            $discussion->timestart = $rec->timestart;
-            $discussion->timeend = $rec->timeend;
-
-            $post = null;
-            if (!$isdiscussion) {
-                $post = new stdClass();
-                $post->id = $rec->postid;
-                $post->parent = $rec->postparent;
-                $post->userid = $rec->userid;
-            }
-
-            if ($isdiscussion && !forum_user_can_see_discussion($forum, $discussion, $context)) {
+            if ($isdiscussion && !forum_user_can_see_discussion($forum, $rec->discussionid, $context)) {
                 // This is a discussion which the user has no permission to view
                 $item->title = get_string('forumsubjecthidden', 'forum');
                 $message = get_string('forumbodyhidden', 'forum');
                 $item->author = get_string('forumauthorhidden', 'forum');
-            } else if (!$isdiscussion && !forum_user_can_see_post($forum, $discussion, $post, $USER, $cm)) {
+            } else if (!$isdiscussion && !forum_user_can_see_post($forum, $rec->discussionid, $rec->postid, $USER, $cm)) {
                 // This is a post which the user has no permission to view
                 $item->title = get_string('forumsubjecthidden', 'forum');
                 $message = get_string('forumbodyhidden', 'forum');

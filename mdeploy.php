@@ -780,25 +780,17 @@ class worker extends singleton_pattern {
             $this->log('Current plugin code location: '.$sourcelocation);
             $this->log('Moving the current code into archive: '.$backuplocation);
 
-            if (file_exists($sourcelocation)) {
-                // We don't want to touch files unless we are pretty sure it would be all ok.
-                if (!$this->move_directory_source_precheck($sourcelocation)) {
-                    throw new backup_folder_exception('Unable to backup the current version of the plugin (source precheck failed)');
-                }
-                if (!$this->move_directory_target_precheck($backuplocation)) {
-                    throw new backup_folder_exception('Unable to backup the current version of the plugin (backup precheck failed)');
-                }
+            // We don't want to touch files unless we are pretty sure it would be all ok.
+            if (!$this->move_directory_source_precheck($sourcelocation)) {
+                throw new backup_folder_exception('Unable to backup the current version of the plugin (source precheck failed)');
+            }
+            if (!$this->move_directory_target_precheck($backuplocation)) {
+                throw new backup_folder_exception('Unable to backup the current version of the plugin (backup precheck failed)');
+            }
 
-                // Looking good, let's try it.
-                if (!$this->move_directory($sourcelocation, $backuplocation, true)) {
-                    throw new backup_folder_exception('Unable to backup the current version of the plugin (moving failed)');
-                }
-
-            } else {
-                // Upgrading missing plugin - this happens often during upgrades.
-                if (!$this->create_directory_precheck($sourcelocation)) {
-                    throw new filesystem_exception('Unable to prepare the plugin location (cannot create new directory)');
-                }
+            // Looking good, let's try it.
+            if (!$this->move_directory($sourcelocation, $backuplocation, true)) {
+                throw new backup_folder_exception('Unable to backup the current version of the plugin (moving failed)');
             }
 
             // Unzip the plugin package file into the target location.

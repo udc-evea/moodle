@@ -55,7 +55,7 @@ class mod_assign_renderer extends plugin_renderer_base {
      * @return string
      */
     public function render_assign_files(assign_files $tree) {
-        $this->htmlid = html_writer::random_id('assign_files_tree');
+        $this->htmlid = 'assign_files_tree_'.uniqid();
         $this->page->requires->js_init_call('M.mod_assign.init_tree', array(true, $this->htmlid));
         $html = '<div id="'.$this->htmlid.'">';
         $html .= $this->htmllize_tree($tree, $tree->dir);
@@ -685,9 +685,7 @@ class mod_assign_renderer extends plugin_renderer_base {
                     $o .= $this->output->box_end();
                 } else if ($submission->status == ASSIGN_SUBMISSION_STATUS_REOPENED) {
                     $o .= $this->output->box_start('generalbox submissionaction');
-                    $urlparams = array('id' => $status->coursemoduleid,
-                                       'action' => 'editprevioussubmission',
-                                       'sesskey'=>sesskey());
+                    $urlparams = array('id' => $status->coursemoduleid, 'action' => 'editprevioussubmission');
                     $o .= $this->output->single_button(new moodle_url('/mod/assign/view.php', $urlparams),
                                                        get_string('addnewattemptfromprevious', 'assign'), 'get');
                     $o .= $this->output->box_start('boxaligncenter submithelp');
@@ -815,10 +813,10 @@ class mod_assign_renderer extends plugin_renderer_base {
                     // Edit previous feedback.
                     $returnparams = http_build_query($history->returnparams);
                     $urlparams = array('id' => $history->coursemoduleid,
-                                   'rownum'=>$history->rownum,
-                                   'useridlistid'=>$history->useridlistid,
+                                   'userid'=>$grade->userid,
                                    'attemptnumber'=>$grade->attemptnumber,
                                    'action'=>'grade',
+                                   'rownum'=>0,
                                    'returnaction'=>$history->returnaction,
                                    'returnparams'=>$returnparams);
                     $url = new moodle_url('/mod/assign/view.php', $urlparams);

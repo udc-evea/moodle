@@ -53,11 +53,7 @@ class behat_navigation extends behat_base {
         // all of tree's nodes; adding this because of scenarios that shares the
         // same steps with and without Javascript enabled.
         if (!$this->running_javascript()) {
-            if ($nodetext === get_string('administrationsite')) {
-                // Administration menu is not loaded by default any more. Click the link to expand.
-                return new Given('I click on "'.$nodetext.'" "link" in the "'.get_string('administration').'" "block"');
-            }
-            return true;
+            return false;
         }
 
         // Avoid problems with quotes.
@@ -76,7 +72,6 @@ class behat_navigation extends behat_base {
 
         $exception = new ExpectationException('The "' . $nodetext . '" node can not be expanded', $this->getSession());
         $node = $this->find('xpath', $xpath, $exception);
-        $this->ensure_node_is_visible($node);
         $node->click();
     }
 
@@ -91,7 +86,7 @@ class behat_navigation extends behat_base {
 
         // No collapsible nodes with non-JS browsers.
         if (!$this->running_javascript()) {
-            return true;
+            return false;
         }
 
         // Avoid problems with quotes.

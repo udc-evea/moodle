@@ -73,6 +73,7 @@ class login_signup_form extends moodleform {
 
         $mform->addElement('text', 'city', get_string('city'), 'maxlength="120" size="20"');
         $mform->setType('city', PARAM_TEXT);
+        $mform->addRule('city', get_string('missingcity'), 'required', null, 'server');
         if (!empty($CFG->defaultcity)) {
             $mform->setDefault('city', $CFG->defaultcity);
         }
@@ -81,6 +82,7 @@ class login_signup_form extends moodleform {
         $default_country[''] = get_string('selectacountry');
         $country = array_merge($default_country, $country);
         $mform->addElement('select', 'country', get_string('country'), $country);
+        $mform->addRule('country', get_string('missingcountry'), 'required', null, 'server');
 
         if( !empty($CFG->country) ){
             $mform->setDefault('country', $CFG->country);

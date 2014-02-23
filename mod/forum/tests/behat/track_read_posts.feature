@@ -30,6 +30,7 @@ Feature: A teacher can set one of 3 possible options for tracking read forum pos
     And I add a new discussion to "Test forum name" forum with:
       | Subject | Test post subject |
       | Message | Test post message |
+    And I wait "6" seconds
     And I log out
     When I log in as "student1"
     And I follow "Course 1"
@@ -47,18 +48,19 @@ Feature: A teacher can set one of 3 possible options for tracking read forum pos
     And I add a new discussion to "Test forum name" forum with:
       | Subject | Test post subject |
       | Message | Test post message |
+    And I wait "6" seconds
     And I log out
     When I log in as "student1"
     And I follow "Course 1"
     Then I should see "1 unread post"
     And I follow "Test forum name"
     And I follow "Don't track unread posts"
-    And I wait to be redirected
+    And I wait "4" seconds
     And I follow "Course 1"
     And I should not see "1 unread post"
     And I follow "Test forum name"
     And I follow "Track unread posts"
-    And I wait to be redirected
+    And I wait "4" seconds
     And I follow "1"
     And I follow "Course 1"
     And I should not see "1 unread post"
@@ -73,6 +75,7 @@ Feature: A teacher can set one of 3 possible options for tracking read forum pos
     And I add a new discussion to "Test forum name" forum with:
       | Subject | Test post subject |
       | Message | Test post message |
+    And I wait "6" seconds
     And I log out
     When I log in as "student2"
     And I follow "Course 1"
@@ -82,7 +85,7 @@ Feature: A teacher can set one of 3 possible options for tracking read forum pos
 
   @javascript
   Scenario: Tracking forum posts forced with user tracking on
-    Given I set the following administration settings values:
+    And I set the following administration settings values:
       | Allow forced read tracking | 1 |
     And I follow "Home"
     And I follow "Course 1"
@@ -94,6 +97,7 @@ Feature: A teacher can set one of 3 possible options for tracking read forum pos
     And I add a new discussion to "Test forum name" forum with:
       | Subject | Test post subject |
       | Message | Test post message |
+    And I wait "6" seconds
     And I log out
     When I log in as "student1"
     And I follow "Course 1"
@@ -106,7 +110,7 @@ Feature: A teacher can set one of 3 possible options for tracking read forum pos
 
   @javascript
   Scenario: Tracking forum posts forced with user tracking off
-    Given I set the following administration settings values:
+    And I set the following administration settings values:
       | Allow forced read tracking | 1 |
     And I follow "Home"
     And I follow "Course 1"
@@ -118,6 +122,7 @@ Feature: A teacher can set one of 3 possible options for tracking read forum pos
     And I add a new discussion to "Test forum name" forum with:
       | Subject | Test post subject |
       | Message | Test post message |
+    And I wait "6" seconds
     And I log out
     When I log in as "student2"
     And I follow "Course 1"
@@ -130,7 +135,7 @@ Feature: A teacher can set one of 3 possible options for tracking read forum pos
 
   @javascript
   Scenario: Tracking forum posts forced (with force disabled) with user tracking on
-    Given I set the following administration settings values:
+    And I set the following administration settings values:
       | Allow forced read tracking | 1 |
     And I follow "Home"
     And I follow "Course 1"
@@ -142,6 +147,7 @@ Feature: A teacher can set one of 3 possible options for tracking read forum pos
     And I add a new discussion to "Test forum name" forum with:
       | Subject | Test post subject |
       | Message | Test post message |
+    And I wait "6" seconds
     And I set the following administration settings values:
       | Allow forced read tracking | 0 |
     And I log out
@@ -150,19 +156,19 @@ Feature: A teacher can set one of 3 possible options for tracking read forum pos
     Then I should see "1 unread post"
     And I follow "Test forum name"
     And I follow "Don't track unread posts"
-    And I wait to be redirected
+    And I wait "4" seconds
     And I follow "Course 1"
     And I should not see "1 unread post"
     And I follow "Test forum name"
     And I follow "Track unread posts"
-    And I wait to be redirected
+    And I wait "4" seconds
     And I follow "1"
     And I follow "Course 1"
     And I should not see "1 unread post"
 
   @javascript
   Scenario: Tracking forum posts forced (with force disabled) with user tracking off
-    Given I set the following administration settings values:
+    And I set the following administration settings values:
       | Allow forced read tracking | 1 |
     And I follow "Home"
     And I follow "Course 1"
@@ -174,6 +180,7 @@ Feature: A teacher can set one of 3 possible options for tracking read forum pos
     And I add a new discussion to "Test forum name" forum with:
       | Subject | Test post subject |
       | Message | Test post message |
+    And I wait "6" seconds
     And I set the following administration settings values:
       | Allow forced read tracking | 0 |
     And I log out

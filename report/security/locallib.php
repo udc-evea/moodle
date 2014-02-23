@@ -508,8 +508,7 @@ function report_security_check_riskxss($detailed=false) {
     $result->info = get_string('check_riskxss_warning', 'report_security', $count);
 
     if ($detailed) {
-        $userfields = user_picture::fields('u');
-        $users = $DB->get_records_sql("SELECT DISTINCT $userfields $sqlfrom", $params);
+        $users = $DB->get_records_sql("SELECT DISTINCT u.id, u.firstname, u.lastname, u.picture, u.imagealt $sqlfrom", $params);
         foreach ($users as $uid=>$user) {
             $users[$uid] = fullname($user);
         }
@@ -711,8 +710,7 @@ function report_security_check_riskadmin($detailed=false) {
     $result->status  = null;
     $result->link    = null;
 
-    $userfields = user_picture::fields('u');
-    $sql = "SELECT $userfields
+    $sql = "SELECT u.id, u.firstname, u.lastname, u.picture, u.imagealt, u.email
               FROM {user} u
              WHERE u.id IN ($CFG->siteadmins)";
 
@@ -836,8 +834,7 @@ function report_security_check_riskbackup($detailed=false) {
         $users = array();
 
         list($sort, $sortparams) = users_order_by_sql('u');
-        $userfields = user_picture::fields('u');
-        $rs = $DB->get_recordset_sql("SELECT DISTINCT $userfields, ra.contextid, ra.roleid
+        $rs = $DB->get_recordset_sql("SELECT DISTINCT u.id, u.firstname, u.lastname, u.picture, u.imagealt, u.email, ra.contextid, ra.roleid
             $sqluserinfo ORDER BY $sort", array_merge($params, $sortparams));
 
         foreach ($rs as $user) {

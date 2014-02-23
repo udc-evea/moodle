@@ -17,7 +17,7 @@
 /**
  * Backup and restore actions to help behat feature files writting.
  *
- * @package    core_backup
+ * @package    core
  * @category   test
  * @copyright  2013 David Monllaó
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -35,7 +35,7 @@ use Behat\Gherkin\Node\TableNode as TableNode,
 /**
  * Backup-related steps definitions.
  *
- * @package    core_backup
+ * @package    core
  * @category   test
  * @copyright  2013 David Monllaó
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -56,32 +56,27 @@ class behat_backup extends behat_base {
 
         // Go to homepage.
         $this->getSession()->visit($this->locate_path('/'));
-        $this->wait();
 
         // Click the course link.
         $this->find_link($backupcourse)->click();
-        $this->wait();
 
         // Click the backup link.
         $this->find_link(get_string('backup'))->click();
-        $this->wait();
 
         // Initial settings.
         $this->fill_backup_restore_form($options);
         $this->find_button(get_string('backupstage1action', 'backup'))->press();
-        $this->wait();
 
         // Schema settings.
         $this->fill_backup_restore_form($options);
         $this->find_button(get_string('backupstage2action', 'backup'))->press();
-        $this->wait();
 
         // Confirmation and review, backup filename can also be specified.
         $this->fill_backup_restore_form($options);
         $this->find_button(get_string('backupstage4action', 'backup'))->press();
 
         // Waiting for it to finish.
-        $this->wait(self::EXTENDED_TIMEOUT);
+        $this->wait(10);
 
         // Last backup continue button.
         $this->find_button(get_string('backupstage16action', 'backup'))->press();
@@ -106,15 +101,12 @@ class behat_backup extends behat_base {
 
         // Go to homepage.
         $this->getSession()->visit($this->locate_path('/'));
-        $this->wait();
 
         // Click the course link.
         $this->find_link($tocourse)->click();
-        $this->wait();
 
         // Click the import link.
         $this->find_link(get_string('import'))->click();
-        $this->wait();
 
         // Select the course.
         $exception = new ExpectationException('"' . $fromcourse . '" course not found in the list of courses to import from', $this->getSession());
@@ -129,21 +121,18 @@ class behat_backup extends behat_base {
         $radionode->click();
 
         $this->find_button(get_string('continue'))->press();
-        $this->wait();
 
         // Initial settings.
         $this->fill_backup_restore_form($options);
         $this->find_button(get_string('importbackupstage1action', 'backup'))->press();
-        $this->wait();
 
         // Schema settings.
         $this->fill_backup_restore_form($options);
         $this->find_button(get_string('importbackupstage2action', 'backup'))->press();
-        $this->wait();
 
         // Run it.
         $this->find_button(get_string('importbackupstage4action', 'backup'))->press();
-        $this->wait(self::EXTENDED_TIMEOUT);
+        $this->wait();
 
         // Continue and redirect to 'to' course.
         $this->find_button(get_string('continue'))->press();
@@ -305,22 +294,17 @@ class behat_backup extends behat_base {
         // Settings.
         $this->fill_backup_restore_form($options);
         $this->find_button(get_string('restorestage4action', 'backup'))->press();
-        $this->wait();
 
         // Schema.
         $this->fill_backup_restore_form($options);
         $this->find_button(get_string('restorestage8action', 'backup'))->press();
-        $this->wait();
 
         // Review, no options here.
         $this->find_button(get_string('restorestage16action', 'backup'))->press();
-        $this->wait();
+        $this->wait(10);
 
         // Last restore continue button, redirected to restore course after this.
         $this->find_button(get_string('restorestage32action', 'backup'))->press();
-
-        // Long wait when waiting for the restore to finish.
-        $this->wait(self::EXTENDED_TIMEOUT);
     }
 
     /**
@@ -341,15 +325,11 @@ class behat_backup extends behat_base {
             return;
         }
 
-        // Wait for the page to be loaded and the JS ready.
-        $this->wait();
-
         // If we find any of the provided options in the current form we should set the value.
         $datahash = $options->getRowsHash();
         foreach ($datahash as $locator => $value) {
 
             try {
-                // Using $this->find* to enforce stability over speed.
                 $fieldnode = $this->find_field($locator);
                 $field = behat_field_manager::get_form_field($fieldnode, $this->getSession());
                 $field->set_value($value);
@@ -361,9 +341,9 @@ class behat_backup extends behat_base {
     }
 
     /**
-     * Waits until the DOM and the page Javascript code is ready.
+     * Waits until the DOM is ready.
      *
-     * @param int $timeout The number of seconds that we wait.
+     * @param int To override the default timeout
      * @return void
      */
     protected function wait($timeout = false) {
@@ -375,8 +355,7 @@ class behat_backup extends behat_base {
         if (!$timeout) {
             $timeout = self::TIMEOUT;
         }
-
-        $this->getSession()->wait($timeout * 1000, self::PAGE_READY_JS);
+        $this->getSession()->wait($timeout, '(document.readyState === "complete")');
     }
 
 }

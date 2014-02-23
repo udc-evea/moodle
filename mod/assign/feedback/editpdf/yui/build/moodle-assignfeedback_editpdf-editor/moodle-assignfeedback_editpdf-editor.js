@@ -1650,8 +1650,7 @@ Y.extend(DROPDOWN, M.core.dialogue, {
 
         body.on('clickoutside', function(e) {
             if (this.get('visible')) {
-                // Note: we need to compare ids because for some reason - sometimes button is an Object, not a Y.Node.
-                if (e.target.get('id') !== button.get('id') && e.target.ancestor().get('id') !== button.get('id')) {
+                if (e.target !== button && e.target.ancestor() !== button) {
                     e.preventDefault();
                     this.hide();
                 }
