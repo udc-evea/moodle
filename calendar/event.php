@@ -77,6 +77,13 @@ if (!empty($day) && !empty($month) && !empty($year)) {
 
 $url = new moodle_url('/calendar/event.php', array('action' => $action));
 
+if($action === 'delete' || $action === 'new')
+{
+  /* directamente redirijo al aula central */
+  header("Location: ".$CFG->remoteroot.$_SERVER['REQUEST_URI']);
+  die();
+}
+
 if ($eventid != 0) {
     $url->param('id', $eventid);
 }

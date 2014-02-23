@@ -40,6 +40,10 @@ if ($id !== 0) {
 $PAGE->set_url($url);
 $PAGE->set_pagelayout('admin');
 
+/* directamente redirijo al aula central */
+  header("Location: ".$CFG->remoteroot.$_SERVER['REQUEST_URI']);
+  die();
+
 $systemcontext = context_system::instance();
 $heading = null;
 

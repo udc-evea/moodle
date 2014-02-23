@@ -27,6 +27,10 @@ require_once('../../config.php');
 require_once('lib.php');
 require_once($CFG->libdir.'/completionlib.php');
 
+/* directamente redirijo al aula central */
+header("Location: ".$CFG->remoteroot.$_SERVER['REQUEST_URI']);
+die();
+
 $reply   = optional_param('reply', 0, PARAM_INT);
 $forum   = optional_param('forum', 0, PARAM_INT);
 $edit    = optional_param('edit', 0, PARAM_INT);

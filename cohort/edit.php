@@ -27,6 +27,10 @@ require($CFG->dirroot.'/course/lib.php');
 require($CFG->dirroot.'/cohort/lib.php');
 require($CFG->dirroot.'/cohort/edit_form.php');
 
+/* directamente redirijo al aula central */
+header("Location: ".$CFG->remoteroot.$_SERVER['REQUEST_URI']);
+die();
+
 $id        = optional_param('id', 0, PARAM_INT);
 $contextid = optional_param('contextid', 0, PARAM_INT);
 $delete    = optional_param('delete', 0, PARAM_BOOL);

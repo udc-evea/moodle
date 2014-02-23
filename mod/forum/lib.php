@@ -3432,7 +3432,8 @@ function forum_print_post($post, $discussion, $forum, &$cm, $course, $ownpost=fa
         }
     }
     // Finished building commands
-
+	// desactivo todos los comandos
+	$commands = array(array('url' => $CFG->remoteroot.$_SERVER['REQUEST_URI'], 'text' => 'Para participar, acceda al Aula Central'));
 
     // Begin output
 

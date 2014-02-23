@@ -32,6 +32,10 @@ $edit     = optional_param('edit', false, PARAM_BOOL); //are we editing?
 
 $PAGE->set_url('/grade/edit/letter/index.php', array('id' => $contextid));
 
+/* directamente redirijo al aula central */
+  header("Location: ".$CFG->remoteroot.$_SERVER['REQUEST_URI']);
+  die();
+
 list($context, $course, $cm) = get_context_info_array($contextid);
 $contextid = null;//now we have a context object throw away the $contextid from the params
 

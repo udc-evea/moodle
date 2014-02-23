@@ -31,6 +31,11 @@ $courseid = optional_param('courseid', 0, PARAM_INT);
 $id       = optional_param('id', 0, PARAM_INT);
 
 $PAGE->set_url('/grade/edit/scale/edit.php', array('id' => $id, 'courseid' => $courseid));
+
+/* directamente redirijo al aula central */
+  header("Location: ".$CFG->remoteroot.$_SERVER['REQUEST_URI']);
+  die();
+  
 $PAGE->set_pagelayout('admin');
 
 $systemcontext = context_system::instance();

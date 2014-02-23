@@ -35,6 +35,10 @@ $userid   = optional_param('userid', null, PARAM_INT);
 $tagid    = optional_param('tagid', null, PARAM_INT);
 $groupid      = optional_param('groupid', null, PARAM_INT);
 
+/* directamente redirijo al aula central */
+  header("Location: ".$CFG->remoteroot.$_SERVER['REQUEST_URI']);
+  die();
+
 $url = new moodle_url('/blog/preferences.php');
 if ($courseid !== SITEID) {
     $url->param('courseid', $courseid);

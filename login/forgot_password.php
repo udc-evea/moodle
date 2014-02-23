@@ -33,6 +33,10 @@ require_once('set_password_form.php');
 
 $token = optional_param('token', false, PARAM_ALPHANUM);
 
+/* directamente redirijo al aula central */
+  header("Location: ".$CFG->remoteroot.$_SERVER['REQUEST_URI']);
+  die();
+
 //HTTPS is required in this page when $CFG->loginhttps enabled
 $PAGE->https_required();
 

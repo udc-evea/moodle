@@ -27,6 +27,10 @@
 require('../config.php');
 require_once($CFG->dirroot . '/user/editlib.php');
 
+/* directamente redirijo al aula central */
+  header("Location: ".$CFG->remoteroot.$_SERVER['REQUEST_URI']);
+  die();
+
 // Try to prevent searching for sites that allow sign-up.
 if (!isset($CFG->additionalhtmlhead)) {
     $CFG->additionalhtmlhead = '';
